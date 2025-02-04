@@ -31,8 +31,8 @@ resource "google_secret_manager_secret" "datadog_secret" {
   depends_on = [google_project_service.enable_apis]
 }
 
-# Create a secret version with the Datadog API key
 resource "google_secret_manager_secret_version" "secret_version" {
   secret      = google_secret_manager_secret.datadog_secret.id
   secret_data = var.datadog_api_key
 }
+

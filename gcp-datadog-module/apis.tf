@@ -17,6 +17,7 @@ resource "google_project_service" "enable_apis" {
   project = var.project_id
 
   for_each = toset([
+    "compute.googleapis.com",
     "secretmanager.googleapis.com",
     "pubsub.googleapis.com",
     "dataflow.googleapis.com",

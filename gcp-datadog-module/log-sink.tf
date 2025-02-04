@@ -25,7 +25,7 @@ resource "google_logging_project_sink" "datadog_export_sink" {
   project                = var.project_id
   destination            = "pubsub.googleapis.com/projects/${var.project_id}/topics/${var.topic_name}"
   unique_writer_identity = true
-  filter                 = var.inclusion_filter
+  filter                 = "logName:cloudaudit.googleapis.com ${var.inclusion_filter}"
 }
 
 # Create a logging sink at the FOLDER scope | if variable 'log_sink_in_folder' is 'false' or not used this resource will not be created.
@@ -36,8 +36,48 @@ resource "google_logging_folder_sink" "datadog_export_sink" {
   description      = "Folder Sink to route logs from GCP to Datadog."
   folder           = var.folder_id
   destination      = "pubsub.googleapis.com/projects/${var.project_id}/topics/${var.topic_name}"
-  filter           = var.inclusion_filter
+  filter           = "logName:cloudaudit.googleapis.com ${var.inclusion_filter}"
+  # children projects will not store the logs locally 
   include_children = true
+
+  dynamic "exclusions" {
+    for_each = var.exclusions  != null ? var.exclusions : {}
+    content {
+      name = exclusions.key
+      description = exclusions.value["description"]
+      filter = exclusions.value["filter"]
+      disabled = exclusions.value["disabled"]
+    }
+  }
+
+}
+
+# Enable project level audit logging
+resource "google_project_iam_audit_config" "audit_logging" {
+  count   = var.log_sink_in_folder ? 0 : 1
+  project = var.project_id
+  service = "allServices"
+
+  dynamic "audit_log_config" {
+    for_each = var.audit_logtypes
+    content {
+      log_type = audit_log_config.value
+    }
+  }
+}
+
+# Enable folder level audit logging
+resource "google_folder_iam_audit_config" "audit_logging" {
+  count   = var.log_sink_in_folder ? 1 : 0
+  folder  = var.folder_id
+  service = "allServices"
+
+  dynamic "audit_log_config" {
+    for_each = var.audit_logtypes
+    content {
+      log_type = audit_log_config.value
+    }
+  }
 }
 
 #########################################################################

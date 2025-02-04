@@ -15,11 +15,13 @@
 # Fetch VPC/Subnet network details
 data "google_compute_network" "vpc" {
   name = var.vpc_name
+  depends_on = [ time_sleep.dataflow_sa_creation ]
 }
 
 data "google_compute_subnetwork" "dataflow_subnetwork" {
   name   = var.subnet_name
   region = var.subnet_region
+  depends_on = [ time_sleep.dataflow_sa_creation ]
 }
 
 ###################################################################################################
