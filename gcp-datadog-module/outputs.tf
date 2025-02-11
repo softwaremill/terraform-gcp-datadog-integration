@@ -31,3 +31,8 @@ output "datadog_subscription_name" {
   description = "The name of the created Pub/Sub subscription."
   value       = google_pubsub_subscription.datadog_topic_sub.name
 }
+
+output "datadog_export_service_account" {
+  description = "SA to use while establishing integration with Datadog"
+  value = google_service_account.dataflow_datadog_export_sa.email
+}

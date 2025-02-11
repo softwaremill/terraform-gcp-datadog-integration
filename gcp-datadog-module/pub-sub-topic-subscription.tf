@@ -34,7 +34,7 @@ resource "google_pubsub_subscription" "datadog_topic_sub" {
   }
 
   message_retention_duration = "604800s"
-  name                       = var.subscription_name
+  name                       = "${var.topic_name}-sub"
   project                    = var.project_id
   topic                      = google_pubsub_topic.datadog_topic.id
 }
@@ -68,7 +68,7 @@ resource "google_pubsub_topic_iam_member" "logs_sa_publishing_permissions_folder
 #This additional Topic/Subscription are created to handle any log messages rejected by the Datadog API.
 
 resource "google_pubsub_topic" "output_dead_letter" {
-  name    = "outputDeadletterTopic"
+  name    = "${var.topic_name}-dlq"
   project = var.project_id
 }
 
@@ -80,7 +80,7 @@ resource "google_pubsub_subscription" "output_dead_letter_sub" {
   }
 
   message_retention_duration = "604800s"
-  name                       = "outputDeadletterTopic-sub"
+  name                       = "${var.topic_name}-dlq-sub"
   project                    = var.project_id
   topic                      = google_pubsub_topic.output_dead_letter.id
 }

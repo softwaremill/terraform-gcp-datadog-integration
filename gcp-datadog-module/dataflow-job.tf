@@ -27,6 +27,7 @@ resource "google_dataflow_job" "pubsub_stream_to_datadog" {
   ip_configuration        = "WORKER_IP_PRIVATE"
   max_workers             = 3
   enable_streaming_engine = true
+  machine_type            = var.dataflow_machine_type
   parameters = {
     inputSubscription     = google_pubsub_subscription.datadog_topic_sub.id,
     url                   = var.datadog_site_url,
@@ -34,7 +35,7 @@ resource "google_dataflow_job" "pubsub_stream_to_datadog" {
     apiKeySource          = "SECRET_MANAGER",
     outputDeadletterTopic = google_pubsub_topic.output_dead_letter.id
   }
-  on_delete = "cancel"
-  labels    = { dataflow-job-label = "datadog_terraform" }
+  on_delete  = "cancel"
+  labels     = { dataflow-job-label = "datadog_terraform" }
   depends_on = [google_project_service.enable_apis, time_sleep.dataflow_sa_creation]
 }
