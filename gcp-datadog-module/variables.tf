@@ -115,15 +115,3 @@ variable "topic_name" {
   default     = "datadog-export-topic"
 }
 
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,5 @@
 
-# How to use this module
+# Example describing how to use this module
 
 provider "google" {
   project = var.project_id
