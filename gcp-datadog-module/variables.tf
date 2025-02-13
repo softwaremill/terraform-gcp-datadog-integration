@@ -56,10 +56,16 @@ variable "datadog_site_url" {
   default     = "https://http-intake.logs.datadoghq.eu"
 }
 
-variable "datadog_api_key" {
+variable "datadog_secret_name" {
   type        = string
-  description = "Datadog API Key for integration. Provide it on tf ivocation. Do not store outside of password vault!"
-  sensitive   = true
+  description = "GCP secret name that contains Datadog api key"
+  default = "datadog-api-key"
+}
+
+variable "datadog_secret_version" {
+  type        = string
+  description = "GCP datadog api key secret version to use"
+  default = "latest"
 }
 
 variable "dataflow_job_name" {

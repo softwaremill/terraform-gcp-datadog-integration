@@ -1,9 +1,3 @@
-variable "datadog_api_key" {
-  type        = string
-  description = "Datadog API Key for integration. Provide it on tf ivocation. Do not store outside of password vault!"
-  sensitive   = true
-}
-
 variable "project_id" {
   type        = string
   description = "The ID of the Google Cloud project."

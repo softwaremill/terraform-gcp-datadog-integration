@@ -16,6 +16,16 @@
 # CREATE A DATAFLOW JOB THAT USES THE 'PUB/SUB TO DATADOG' TEMPLATE #
 #####################################################################
 
+# discover the apikey secret
+data "google_secret_manager_secret" "datadog_secret" {
+  secret_id = var.datadog_secret_name
+}
+
+data "google_secret_manager_secret_version" "datadog_secret_version" {
+  secret  = data.google_secret_manager_secret.datadog_secret.id
+  version = var.datadog_secret_version
+}
+
 resource "google_dataflow_job" "pubsub_stream_to_datadog" {
   name                    = var.dataflow_job_name
   template_gcs_path       = "gs://dataflow-templates-${var.subnet_region}/latest/Cloud_PubSub_to_Datadog"
@@ -31,7 +41,7 @@ resource "google_dataflow_job" "pubsub_stream_to_datadog" {
   parameters = {
     inputSubscription     = google_pubsub_subscription.datadog_topic_sub.id,
     url                   = var.datadog_site_url,
-    apiKeySecretId        = google_secret_manager_secret_version.secret_version.name,
+    apiKeySecretId        = data.google_secret_manager_secret_version.datadog_secret_version.id,
     apiKeySource          = "SECRET_MANAGER",
     outputDeadletterTopic = google_pubsub_topic.output_dead_letter.id
   }

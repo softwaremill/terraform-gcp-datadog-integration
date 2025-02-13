@@ -38,12 +38,14 @@ resourcemanager.folders.setIamPolicy
 
 Likely it's good to grant project owner, at least temporarly.
 
+4. Datadog api key secret must be created manually. Keep in mind to create it in a location used for the deployment.
+
 
 ## How to deploy it
 
 1. Create datadog api key using export sa : `dataflow-datadog-export-sa@<project_id>.iam.gserviceaccount.com`.
-2. Save the new key in a vault for a future redeployments.
-3. Review `variables.tf` and prepare the list of variables to parametrize the module. *Do not* include the api-key into configfiles. Pass it via commandline arg/env instead.
+2. Review `variables.tf` and prepare the list of variables to parametrize the module.
+3. Make sure that GCP secret containing a valid Datadog api key exists in a correct location.
 4. Standard deploy using terraform.
 
 
